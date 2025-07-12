@@ -7,7 +7,6 @@ const ChatWindow = () => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null);
 
-  // Scroll chat to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -19,19 +18,18 @@ const ChatWindow = () => {
     setMessages((msgs) => [...msgs, userMessage]);
     setInput('');
 
-    // Call your backend API here
     try {
-      const response = await fetch('http://10.0.0.113:5000/api/chat', {  // change to your backend
+      const response = await fetch('http://10.0.0.113:5000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: input }),
       });
-      const data = await response.json();
 
+      const data = await response.json();
       const botMessage = { id: Date.now() + 1, from: 'bot', text: data.reply };
       setMessages((msgs) => [...msgs, botMessage]);
     } catch (error) {
-      const errorMsg = { id: Date.now() + 2, from: 'bot', text: 'Sorry, something went wrong.' };
+      const errorMsg = { id: Date.now() + 2, from: 'bot', text: 'Error talking to Llama.' };
       setMessages((msgs) => [...msgs, errorMsg]);
     }
   };
@@ -41,7 +39,7 @@ const ChatWindow = () => {
   };
 
   return (
-    <div style={styles.chatContainer}>
+    <div style={styles.container}>
       <div style={styles.messagesContainer}>
         {messages.map(({ id, from, text }) => (
           <div
@@ -72,27 +70,27 @@ const ChatWindow = () => {
 };
 
 const styles = {
-  chatContainer: {
-    maxWidth: 600,
-    height: '80vh',
-    margin: 'auto',
-    border: '1px solid #ccc',
+  container: {
     display: 'flex',
     flexDirection: 'column',
-    fontFamily: 'Arial, sans-serif',
+    height: '100vh',
+    width: '100vw',
+    backgroundColor: '#e5ddd5',
   },
   messagesContainer: {
     flex: 1,
-    padding: 10,
     overflowY: 'auto',
-    backgroundColor: '#e5ddd5',
+    padding: '16px',
+    display: 'flex',
+    flexDirection: 'column',
   },
   messageBubble: {
     maxWidth: '70%',
-    padding: 10,
-    margin: '5px 0',
+    padding: '10px 14px',
+    margin: '6px 0',
     borderRadius: 20,
     wordBreak: 'break-word',
+    fontSize: 16,
   },
   userBubble: {
     backgroundColor: '#0084ff',
@@ -101,20 +99,20 @@ const styles = {
     borderBottomRightRadius: 0,
   },
   botBubble: {
-    backgroundColor: '#f1f0f0',
+    backgroundColor: '#ffffff',
     color: 'black',
     alignSelf: 'flex-start',
     borderBottomLeftRadius: 0,
   },
   inputContainer: {
     display: 'flex',
+    padding: '12px',
+    backgroundColor: '#f5f5f5',
     borderTop: '1px solid #ccc',
-    padding: 10,
-    backgroundColor: 'white',
   },
   input: {
     flex: 1,
-    padding: 10,
+    padding: '12px 16px',
     fontSize: 16,
     borderRadius: 20,
     border: '1px solid #ccc',
@@ -132,3 +130,4 @@ const styles = {
 };
 
 export default ChatWindow;
+
